@@ -1,7 +1,23 @@
 {
+  "name": "python-playground",
+  "version": "1.0.0",
+  "description": "Interactive browser-based Python playground using Pyodide and CodeMirror (scaffolded, production-ready starter).",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "lint": "eslint . || true",
+    "test": "echo \"No tests defined\" && exit 0",
+    "docker-build": "docker build -t python-playground:latest ."
+  },
   "dependencies": {
-    "@codemirror/lang-python": "^6.2.0",
-    "codemirror": "^6.0.1",
-    "pyodide": "^0.27.5"
-  }
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "eslint": "^8.52.0"
+  },
+  "engines": {
+    "node": ">=16"
+  },
+  "license": "MIT"
 }

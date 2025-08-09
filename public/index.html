@@ -1,0 +1,93 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Python Playground</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    body { font-family: Arial, sans-serif; margin: 16px; }
+    #editor { width: 100%; height: 300px; font-family: monospace; }
+    #output { width: 100%; height: 200px; border: 1px solid #ddd; padding: 8px; white-space: pre-wrap; background: #f8f8f8; overflow: auto; }
+    button { margin-right: 8px; }
+    header { display:flex; justify-content:space-between; align-items:center; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Python Playground</h1>
+    <div>
+      <a href="/examples/turtle_demo.py" target="_blank">Open Example</a>
+      &nbsp;|&nbsp;
+      <a href="/health" id="healthLink">Health</a>
+    </div>
+  </header>
+
+  <p>Minimal browser playground using Pyodide. Note: this is a scaffold intended for demo and local development.</p>
+
+  <textarea id="editor">print("Hello from Python-playground")</textarea>
+  <div style="margin-top:8px;">
+    <button id="run">Run</button>
+    <button id="clear">Clear Output</button>
+  </div>
+
+  <h3>Output</h3>
+  <div id="output"></div>
+
+  <script>
+    let pyodide = null;
+    const outputEl = document.getElementById('output');
+    const editor = document.getElementById('editor');
+
+    function appendOutput(text) {
+      outputEl.textContent += text + "\\n";
+      outputEl.scrollTop = outputEl.scrollHeight;
+    }
+
+    async function loadPyodideAndPackages() {
+      appendOutput('Loading Pyodide...');
+      pyodide = await loadPyodide({indexURL: "https://cdn.jsdelivr.net/pyodide/v0.27.5/full/"});
+      appendOutput('Pyodide loaded.');
+    }
+
+    async function runCode() {
+      outputEl.textContent = '';
+      const code = editor.value;
+      try {
+        await pyodide.runPythonAsync(`
+import sys
+from js import console
+def _capture_print(*args, **kwargs):
+    console.log(*args, **kwargs)
+
+# Execute user code
+` + code);
+      } catch (err) {
+        appendOutput('Error: ' + err);
+      }
+    }
+
+    document.getElementById('run').addEventListener('click', async () => {
+      if (!pyodide) {
+        await loadPyodideAndPackages();
+      }
+      appendOutput('Running...');
+      await runCode();
+      appendOutput('Done.');
+    });
+
+    document.getElementById('clear').addEventListener('click', () => {
+      outputEl.textContent = '';
+    });
+
+    // Preload pyodide in background
+    (async () => {
+      const s = document.createElement('script');
+      s.src = "https://cdn.jsdelivr.net/pyodide/v0.27.5/full/pyodide.js";
+      document.head.appendChild(s);
+      s.onload = () => {
+        loadPyodideAndPackages();
+      };
+    })();
+  </script>
+</body>
+</html>

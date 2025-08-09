@@ -76,3 +76,9 @@ MIT License - see [LICENSE](LICENSE) for details
 ---
 
 Made with ❤️ by [Your Name](https://github.com/yourusername)
+
+## Examples
+- `examples/turtle_demo.py` — simple turtle graphics demo that you can paste into the editor and run using the playground's Pyodide-backed runtime.
+- Tip: If the playground does not expose a full `time.sleep`, wrap pauses in try/except as shown in the example.
+
+</final_file_content>
